@@ -9,7 +9,6 @@
     <p align="center">
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
 <a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
 </p>
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
@@ -34,6 +33,23 @@ $ pnpm install
 ```bash
 # postgres
 $ docker-compose --env-file ./.env.dev up -d
+```
+
+### Database migration
+- Documentation: [Prisma Migrate](https://www.prisma.io/docs/concepts/components/prisma-migrate)
+```bash
+# For Development, use when modify database schema
+# Note: This script will create new database migration file in ./prisma/migrations
+# The new file will be executed when run modify below 
+# This comment will clean up the data
+# Ref: https://www.prisma.io/docs/concepts/components/prisma-migrate/migrate-development-production
+# Ref: https://www.prisma.io/docs/guides/migrate/prototyping-schema-db-push
+$ db:develop
+
+# Do modify database base on migration histories
+$ db:modify:dev
+$ db:modify:test
+$ db:modify:prod
 ```
 
 ## Running the app
