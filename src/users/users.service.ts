@@ -18,6 +18,8 @@ export class UsersService {
       password: 'changeme',
       email: 'john@changeme',
       roles: [ROLES.appUser],
+      createAt: Date.now(),
+      updateAt: Date.now(),
     },
     {
       id: '2',
@@ -25,6 +27,8 @@ export class UsersService {
       password: 'guess',
       email: 'maria@guess',
       roles: [ROLES.appAdmin],
+      createAt: Date.now(),
+      updateAt: Date.now(),
     },
   ];
 

@@ -12,20 +12,18 @@ datasource db {
 
 model User {
   @@map("nest_users")
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String?
-  posts Post[]
+  id              String  @id @db.VarChar(16) @default(dbgenerated("null"))
+  email           String  @unique
+  username        String?
+  createAt        BigInt     @default(0) @db.BigInt
+  updateAt        BigInt     @default(0) @db.BigInt
 }
 
-model Post {
-  @@map("nest_posts")
-  id        Int      @default(autoincrement()) @id
-  title     String
-  content   String?
-  published Boolean? @default(false)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
-  createAt  String
-  updateat  String
+model Upload {
+  @@map("mest_uploads")
+  id              String    @id @db.VarChar(16) @default(dbgenerated("null"))
+  // filename        String?
+  // alternativeText String?
+  createAt        BigInt     @default(0) @db.BigInt
+  updateAt        BigInt     @default(0) @db.BigInt
 }

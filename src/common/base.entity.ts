@@ -3,8 +3,9 @@ import { BadRequestException } from '@nestjs/common';
 
 export class BaseEntity {
   id: string;
-  createdAt?: number;
-  updatedAt?: number;
+  createAt: number;
+  updateAt: number;
+  deleteAt?: number;
 }
 
 export const validateEntity = async (

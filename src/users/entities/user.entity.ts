@@ -16,6 +16,5 @@ export class User extends BaseEntity {
   password: string;
 
   enabled?: boolean;
-  deletedAt?: number;
   roles?: string[];
 }
