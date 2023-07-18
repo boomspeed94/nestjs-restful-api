@@ -2,9 +2,9 @@ import { validate } from 'class-validator';
 import { BadRequestException } from '@nestjs/common';
 
 export class BaseEntity {
-  id: string;
-  createAt: number;
-  updateAt: number;
+  id?: string;
+  createAt?: number;
+  updateAt?: number;
   deleteAt?: number;
 }
 

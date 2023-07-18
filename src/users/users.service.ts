@@ -2,7 +2,7 @@ import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { SignUpDto } from '../auth/dto/sign-up.dto';
-import { ErrorCodes } from '../common/error-codes';
+import { badRequest, ErrorCodes } from '../common/error-codes';
 import { nanoid } from 'nanoid';
 import { validateEntity } from '../common/base.entity';
 import * as _ from 'lodash';
@@ -35,7 +35,7 @@ export class UsersService {
   async create(createUserDto: SignUpDto): Promise<User> {
     const user = this.users.find((user) => user.email === createUserDto.email);
     if (user) {
-      throw new BadRequestException(ErrorCodes.emailAlreadyTaken);
+      return badRequest(ErrorCodes.emailAlreadyTaken);
     }
 
     const userToCreate: User = new User();

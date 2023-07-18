@@ -1,6 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// Handle JSON fields: https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,19 +13,46 @@ datasource db {
 }
 
 model User {
+  id                      String      @id @db.VarChar(16) @default(cuid())
+  email                   String      @unique
+  username                String?
+  createAt                BigInt      @default(0) @db.BigInt
+  updateAt                BigInt      @default(0) @db.BigInt
+
   @@map("nest_users")
-  id              String  @id @db.VarChar(16) @default(dbgenerated("null"))
-  email           String  @unique
-  username        String?
-  createAt        BigInt     @default(0) @db.BigInt
-  updateAt        BigInt     @default(0) @db.BigInt
 }
 
-model Upload {
-  @@map("mest_uploads")
-  id              String    @id @db.VarChar(16) @default(dbgenerated("null"))
-  // filename        String?
-  // alternativeText String?
-  createAt        BigInt     @default(0) @db.BigInt
-  updateAt        BigInt     @default(0) @db.BigInt
+enum EntityType {
+  User
+}
+
+model File {
+  id                      String      @id @map("id") @db.VarChar(16) @default(cuid())
+  createAt                BigInt      @default(0) @map("create_at") @db.BigInt
+  updateAt                BigInt      @default(0) @map("update_at") @db.BigInt
+  deleteAt                BigInt      @default(0) @map("delete_at") @db.BigInt
+  userId                  String?     @map("user_id") @db.VarChar(16)
+  filename                String?     @map("filename")
+  width                   Int         @default(0) @map("width") @db.Integer
+  height                  Int         @default(0) @map("height") @db.Integer
+  formats                 Json?       @map("formats") @db.JsonB
+  ext                     String?     @map("ext")
+  mime                    String?     @map("mime")
+  size                    Float       @default(0) @map("size")
+  url                     String      @map("url") @db.VarChar(500)
+  medias                  Media[]
+
+  @@map("mest_files")
+}
+
+model Media {
+  id                      String      @id @db.VarChar(16) @default(cuid())
+  file                    File        @relation(fields: [fileId], references: [id])
+  fileId                  String      @map("file_id")
+  relatedId               String      @map("related_id") @db.VarChar(16)
+  relatedType             EntityType  @map("related_type")
+  field                   String      @map("field")
+  order                   Float       @map("order") @default(0)
+
+  @@map("nest_medias")
 }

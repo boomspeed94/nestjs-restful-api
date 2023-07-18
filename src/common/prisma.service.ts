@@ -1,6 +1,7 @@
 import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { generateId } from './utils';
+import { generateId, unAuditModels } from './utils';
+import * as _ from 'lodash';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
@@ -22,17 +23,34 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
           async create({ operation, model, args, query }) {
             const data = args.data;
             data.id = generateId();
-            data.createAt = Date.now();
-            data.updateAt = Date.now();
+
+            if (!_.includes(unAuditModels, model)) {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              data.deleteAt = 0;
+
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              data.createAt = Date.now();
+
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              data.updateAt = Date.now();
+            }
+
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            data.deleteAt = 0;
             args = { ...args, data };
             return query(args);
           },
           async update({ operation, model, args, query }) {
             const data = args.data;
-            data.updateAt = Date.now();
+            if (!_.includes(unAuditModels, model)) {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              data.updateAt = Date.now();
+            }
+
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             args = { ...args, data };

@@ -3,9 +3,7 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from './dto/sign-up.dto';
 import { JWT_OPTIONS } from '../config';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from '../common/prisma.service';
-import { UploadEntity } from '../upload/entities/upload.entity';
 
 @Injectable()
 export class AuthService {
@@ -39,10 +37,6 @@ export class AuthService {
   }
 
   async signUp(signUpData: SignUpDto): Promise<any> {
-    const aa: Prisma.UploadCreateInput = {};
-    const uploaded: UploadEntity = await this.prisma
-      .xprisma()
-      .upload.create({ data: aa });
     const user = await this.usersService.create(signUpData);
     return await this.issueToken(user);
   }

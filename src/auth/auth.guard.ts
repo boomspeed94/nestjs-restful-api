@@ -11,7 +11,7 @@ import { Reflector } from '@nestjs/core';
 import { APP_USER_ACL, PUBLIC_ACL } from './auth.acl';
 import * as _ from 'lodash';
 import { UsersService } from '../users/users.service';
-import { ErrorCodes } from '../common/error-codes';
+import { ErrorCodes, forbidden, unauthorized } from '../common/error-codes';
 import { AuthService } from './auth.service';
 import { User } from '../users/entities/user.entity';
 
@@ -39,22 +39,30 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      throw new UnauthorizedException(ErrorCodes.unauthorized);
+      return unauthorized(ErrorCodes.unauthorized, {
+        message: 'invalid token',
+      });
     }
     let userId;
     try {
       const { sub } = await this.authService.verifyToken(token);
       userId = sub;
     } catch (e) {
-      throw new UnauthorizedException(ErrorCodes.unauthorized);
+      return unauthorized(ErrorCodes.unauthorized, {
+        message: `verify token failed: ${e.message}`,
+      });
     }
 
     if (!userId) {
-      throw new UnauthorizedException(ErrorCodes.unauthorized);
+      return unauthorized(ErrorCodes.unauthorized, {
+        message: 'Invalid userId',
+      });
     }
     const user: User = await this.userService.findOne(userId);
     if (!user) {
-      throw new UnauthorizedException(ErrorCodes.unauthorized);
+      return unauthorized(ErrorCodes.unauthorized, {
+        message: 'user not found',
+      });
     }
     request['user'] = user;
     this.logger.log(`Authorized user with roles, ${user.roles}, acl: ${acl}`);
@@ -69,7 +77,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    throw new ForbiddenException(ErrorCodes.forbidden);
+    return forbidden(ErrorCodes.forbidden);
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {

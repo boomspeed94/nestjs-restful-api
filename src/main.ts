@@ -1,9 +1,13 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-
 dotenv.config({ path: `.env.${process.env.APP_ENV}` });
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { AppModule } from './app.module';
+// JSON.stringify() doesn't know how to serialize a BigInt
+// https://github.com/GoogleChromeLabs/jsbi/issues/30
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
 
 async function bootstrap() {
   const appOptions = { cors: true };
